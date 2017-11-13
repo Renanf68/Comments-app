@@ -1,0 +1,25 @@
+{
+  "name": "comments-app",
+  "version": "0.1.0",
+  "private": true,
+  "dependencies": {
+    "bootstrap-css-only": "^3.3.7",
+    "firebase": "^4.6.2",
+    "jest-cli": "^20.0.4",
+    "re-base": "^3.0.5",
+    "react": "^16.1.0",
+    "react-dom": "^16.1.0",
+    "react-scripts": "1.0.17"
+  },
+  "scripts": {
+    "start": "react-scripts start",
+    "build": "react-scripts build",
+    "test": "react-scripts test --env=jsdom",
+    "coverage": "react-scripts test --env=jsdom --coverage",
+    "eject": "react-scripts eject"
+  },
+  "devDependencies": {
+    "enzyme": "^3.1.1",
+    "enzyme-adapter-react-16": "^1.0.4"
+  }
+}
