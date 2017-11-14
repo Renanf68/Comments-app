@@ -2,6 +2,7 @@ import React, { Component } from 'react'
 import 'bootstrap-css-only'
 
 import Navbar from './Navbar'
+import ProfileContainer from './ProfileContainer'
 import NewComment from './NewComment'
 import Comments from './Comments'
 import Footer from './Footer'
@@ -14,25 +15,35 @@ class App extends Component {
       isLoggedIn: false,
       user: {}
     }
-    /*this.props.base.bindToState('comments', {
-      context: this,
-      state: 'comments'  
-    })*/
+    this.props.auth.onAuthStateChanged((user)=>{
+      if(user){
+        this.setState({ isLoggedIn: true, user: user })
+        this.syncComments()
+      }else{
+        this.setState({ 
+          isLoggedIn: false, 
+          user: {}
+        })
+      }
+    })
+    this.syncComments = this.syncComments.bind(this)
+    this.postNewComment = this.postNewComment.bind(this)
+    this.auth = this.auth.bind(this)
+    if(this.state.user){
+      this.syncComments()
+    }
+  }
+  syncComments(){
     this.refsComments = this.props.base.syncState('comments', {
       context: this,
       state: 'comments'
     })
-    this.props.auth.onAuthStateChanged((user)=>{
-      if(user){
-        this.setState({ isLoggedIn: true, user: user })
-      }else{
-        this.setState({ isLoggedIn: false, user: {} })
-      }
-    })
-    this.postNewComment = this.postNewComment.bind(this)
-    this.auth = this.auth.bind(this)
   }
   postNewComment(comment){
+    comment.user = {
+      uid: this.state.user.uid,
+      name: this.state.user.displayName
+    }
     const comments =  { ...this.state.comments }
     const timestamp = Date.now()+Math.floor(Math.random()*100)
     comments[`comm-${timestamp}`] = comment
@@ -48,19 +59,11 @@ class App extends Component {
     return (
       <div>
         <Navbar />
-        <div className="container" style={{paddingTop: '80px'}}>
+        <div className="container" style={{paddingTop: '51px', paddingBottom: '120px'}}>
           { 
             this.state.isLoggedIn ?
             <div> 
-              <div className="row">
-                <div className="col-md-2">
-                  <img src={this.state.user.photoURL} alt="Foto do usuário"/>
-                </div>
-                <div className="col-md-10">
-                  <p>{this.state.user.displayName}</p>
-                  <button className="btn btn-warning" onClick={() => this.props.auth.signOut()}>Sair do facebook</button>
-                </div>
-              </div>   
+              <ProfileContainer user={this.state.user} auth={this.props.auth}/>   
               <NewComment postNewComment={this.postNewComment}/> 
             </div>
             :
